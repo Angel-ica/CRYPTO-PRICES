@@ -24,6 +24,7 @@ class WebCrawl():
         for i in range(1, total_height, 7):
             self.driver.execute_script("window.scrollTo(0, {});".format(i))
 
+
     def view_top_coins(self):
         view_more=self.driver.find_element(by=By.XPATH, value='//div[@class="table-coins-footer"]//a')
         ActionChains(self.driver).move_to_element(view_more).click().perform()
@@ -34,7 +35,7 @@ class WebCrawl():
         ActionChains(self.driver).move_to_element(new_currency).click().perform()
         time.sleep(2)
 
-    def get_top_coins(self):
+    def get_top_coins(self)->dict:
         top_coins=self.driver.find_elements(by=By.XPATH, value='//div[@class="coins-list"]//tbody//tr')
         self.data_dict={'Rank':[],'Time':[],'Coin':[],'Symbol':[],'Price':[],'Change in last 24h':[],'Total vol(24h)':[]}
         #print(top_coins)
@@ -49,12 +50,15 @@ class WebCrawl():
             self.data_dict['Symbol'].append(symbol.text)
             price= coin.find_element(by=By.XPATH, value='.//td[4]//div')
             self.data_dict['Price'].append(price.text)
+            assert '£' ==  price.text[0]
+
             last_24_hours=coin.find_element(by=By.XPATH, value='.//td[@class="change"]//div[1]//span')
             self.data_dict['Change in last 24h'].append(last_24_hours.text)
             volume_24h_GBP=coin.find_element(by=By.XPATH, value='.//td[@class="full-volume"]//div')
             self.data_dict['Total vol(24h)'].append(volume_24h_GBP.text)
-   
-
+            #assert '£' ==  price.text[0]
+            #print(price.text[0])
+        return self.data_dict
     def store_in_csv(self):
         df=pd.DataFrame(self.data_dict)
         df.to_csv("crypto_compare_data.csv",index=False,header=True)
