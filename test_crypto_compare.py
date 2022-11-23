@@ -15,6 +15,11 @@ class TestCryptoPrices(unittest.TestCase):
         self.scraper.choose_currency()
         self.scraper.scroll()
 
+    def test_currency(self):
+        self.currency=self.scraper.get_top_coins()
+        for all in self.currency['Price']:
+            self.assertIn('£',all[0])
+
     def test_to_csv(self):
         self.assert_(os.path.isfile('./crypto_compare_data.csv'))
 
