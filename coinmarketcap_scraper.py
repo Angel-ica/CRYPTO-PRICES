@@ -112,9 +112,6 @@ def run():
     crawl.accept_cookies()
     crawl.choose_currency()
     crawl.scroll()
-    #crawl.decline_diamonds_and_awards()
-    #crawl.decline_sign_up()
-    #crawl.decline_survey()
     crawl.get_top_100_coins()
     crawl.store_in_csv()
 
