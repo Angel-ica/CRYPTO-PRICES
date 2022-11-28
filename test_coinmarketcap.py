@@ -2,7 +2,7 @@ import unittest
 import time
 import os.path 
 import pandas as df
-from sainsbury_scrape import WebCrawl as wb
+from coinmarketcap_scraper import WebCrawl as wb
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC

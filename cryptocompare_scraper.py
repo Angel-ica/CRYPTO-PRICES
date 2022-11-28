@@ -6,6 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
 import selenium.common.exceptions
+import webdriver_manager
+from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import time
 import urllib.request
@@ -16,9 +18,15 @@ class WebCrawl():
     def __init__(self):
         print(f"starting at {time.strftime('%H:%M:%S--%D')}")
         opt=Options()
-        opt.add_argument('headless')
-        #opt.add_argument('--start-minimized')
-        self.driver=webdriver.Chrome(options=opt)
+        opt.add_argument("--disable-dev-shm-usage")
+        opt.add_argument("--disable-extensions")
+        opt.add_argument("--disable-gpu")
+        opt.add_argument("--no-sandbox")
+        opt.add_argument('--headless')
+        opt.add_argument('--start-minimized')
+        #self.driver=webdriver.Chrome(options=opt)
+        # self.driver=webdriver.Chrome(options=opt,executable_path='/usr/local/bin/chromedriver')
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(),options=opt) 
         
     def get_page(self):
         self.driver.get('https://www.cryptocompare.com')
@@ -39,15 +47,22 @@ class WebCrawl():
         ActionChains(self.driver).move_to_element(new_currency).click().perform()
         time.sleep(2)
     def decline_sign_in(self):
-        self.driver.find_element(by=By.XPATH, value='//button[@class="close ng-scope"]').click()
+        view_more=self.driver.find_element(by=By.XPATH, value='//button[@class="close ng-scope"]')
+        if view_more:
+            view_more.click()
+            self.scroll()
+            self.get_top_coins()
+        else:
+            self.scroll()
+            self.get_top_coins()
 
-    def get_top_coins(self)->dict:
+    def get_top_coins(self):
         top_coins=self.driver.find_elements(by=By.XPATH, value='//div[@class="coins-list"]//tbody//tr')
         self.data_dict={'Rank':[],'Time':[],'Coin':[],'Symbol':[],'Price':[],'Change in last 24h':[],'Total vol(24h)':[]}
         #print(top_coins)
         time.sleep(20)
         for coin in top_coins:
-            scraped_time=time.strftime('%H:%M:%S--%D')
+            scraped_time=time.strftime('%H:%M:%S%p--%D')
             self.data_dict['Time'].append(scraped_time)
             rank=coin.find_element(by=By.XPATH, value='.//td[1]//div')
             self.data_dict['Rank'].append(rank.text)
@@ -57,7 +72,7 @@ class WebCrawl():
             self.data_dict['Symbol'].append(symbol.text)
             price= coin.find_element(by=By.XPATH, value='.//td[4]//div')
             self.data_dict['Price'].append(price.text)
-            #print(len(price.text))
+            #print(price.text)
             assert '£'==price.text[0]
 
             last_24_hours=coin.find_element(by=By.XPATH, value='.//td[@class="change"]//div[1]//span')
@@ -70,14 +85,14 @@ class WebCrawl():
     def store_in_csv(self):
         df=pd.DataFrame(self.data_dict)
         assert not  df.empty
+        df.dropna(axis=1, how='all')
         df.to_csv("crypto_compare_data.csv",index=False,header=True)
 
     def keep_open(self):
         print(f"finished at {time.strftime('%H:%M:%S--%D')}")
-
-        time.sleep(5000)
-
-def run():
+        time.sleep(10)
+        self.driver.quit()
+def run_scraper():
     crawl=WebCrawl()
     crawl.get_page()
     crawl.view_top_coins()
@@ -88,5 +103,5 @@ def run():
     crawl.store_in_csv()
     crawl.keep_open()
 if __name__=='__main__':
-    run()
+    run_scraper()
 
