@@ -25,14 +25,15 @@ The main functionality of the application is defined in the 'main_script.py'.
 
 
 ''' 
+
 def script():
-    run_scraper() #runs cryptocompare_scraper
+    run_scraper()    #runs cryptocompare_scraper
    
-   run() #runs coinmarketcap_scraper
+   run()     #runs coinmarketcap_scraper
 
 if __name__ == '__main__':
 
-   script() #runs script 
+   script()      #runs script 
    
   '''
     
@@ -74,6 +75,7 @@ NOTE that in the scraper files, the paths to the elements are constantly changin
 
 E.g: 
 -- change_currency=self.driver.find_element(by=By.XPATH, value='//div[@class="sc-8580441d-1 klKJWV"]//button').click()-- 
+
 The XPATH above won't work anymore. 
 
 
