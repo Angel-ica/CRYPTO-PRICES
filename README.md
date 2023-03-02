@@ -21,7 +21,7 @@ The main functionality of the application is defined in the 'main_script.py'.
 --- 'run_scraper' as defined in cryptocompare_scraper.py is the function used to automatically run the scraper, extract and store all required data.
 
 'from coinmarketcap_scraper import run'
---- 'run_scraper' as defined in coinmarketcap_scraper.py is the function used to automatically run the scraper, extract and store all required data.
+--- 'run' as defined in coinmarketcap_scraper.py is the function used to automatically run the scraper, extract and store all required data.
 
 
 ''' 
@@ -45,9 +45,9 @@ Docker
 
 --- Pulls python image.
 
---- An image is a lightweight, standalone, executable package that includes everything needed to run a piece of software, including code, dependencies, libraries, and system tools.
+An image is a lightweight, standalone, executable package that includes everything needed to run a piece of software, including code, dependencies, libraries, and system tools.
 
---- In this case, it indicates that the Docker container should be based on the latest version of the official Python image available from the Docker Hub registry.
+In this case, it indicates that the Docker container should be based on the latest version of the official Python image available from the Docker Hub registry.
 
 'CMD ["python","main_script.py"]'
 
